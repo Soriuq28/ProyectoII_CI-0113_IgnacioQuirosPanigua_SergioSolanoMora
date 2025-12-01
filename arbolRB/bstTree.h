@@ -34,6 +34,24 @@ class ArbolBST{
   string T;
 
   ArbolBST(string T);
+  template<typename U>
+  void insert(U valor) {
+    U* copia = new U(valor);
+    insert((void*)copia);
+  }
+
+  // Insertar por referencia
+  template<typename U>
+  void insert(U& valor) {
+    U* copia = new U(valor);
+    insert((void*)copia);
+  }
+
+  // Insertar puntero
+  template<typename U>
+  void insert(U* ptr) {
+    insert((void*)ptr);
+  }
   void insert(void* dato);
   void encolar(Nodo*& cola, Nodo*& dato);
   void porNiveles(stringstream& ss);

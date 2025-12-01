@@ -39,6 +39,25 @@ ArbolBST::ArbolBST(string T){
 	raiz = NULL;
 	this->T = T;
 }
+// Insertar por valor
+template<typename U>
+void insert(U valor) {
+  U* copia = new U(valor);
+  insert((void*)copia);
+}
+
+// Insertar por referencia
+template<typename U>
+void insert(U& valor) {
+  U* copia = new U(valor);
+  insert((void*)copia);
+}
+
+// Insertar puntero
+template<typename U>
+void insert(U* ptr) {
+  insert((void*)ptr);
+}
 
 void ArbolBST::insert(void* dato){
 	Nodo* nuevoNodo = new Nodo(dato);

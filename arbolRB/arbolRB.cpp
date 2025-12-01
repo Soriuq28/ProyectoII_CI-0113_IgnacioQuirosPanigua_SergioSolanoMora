@@ -218,3 +218,161 @@ string ArbolRB::toSVG(){
 	svgContent << "</svg>";
 	return svgContent.str();
 }
+
+NodoRB* ArbolRB::minimum(NodoRB* n) {
+    while (n->izq != NULL)
+        n = (NodoRB*)n->izq;
+    return n;
+}
+
+void ArbolRB::deleteDato(void* dato) {
+    NodoRB* z = (NodoRB*)search(dato);
+    if (z == NULL) return;
+
+    NodoRB *y = z;
+    NodoRB *x = NULL;
+    bool yOriginalRojo = y->rojo;
+
+    // Caso 1: no tiene hijo izquierdo
+    if (z->izq == NULL) {
+        x = (NodoRB*)z->der;
+        NodoRB* parent = (NodoRB*)z->parent;
+
+        if (z->parent == NULL) raiz = z->der;
+        else if (z == z->parent->izq) z->parent->izq = z->der;
+        else z->parent->der = z->der;
+
+        if (z->der != NULL) ((NodoRB*)z->der)->parent = parent;
+
+    }
+    // Caso 2: no tiene hijo derecho
+    else if (z->der == NULL) {
+        x = (NodoRB*)z->izq;
+        NodoRB* parent = (NodoRB*)z->parent;
+
+        if (z->parent == NULL) raiz = z->izq;
+        else if (z == z->parent->izq) z->parent->izq = z->izq;
+        else z->parent->der = z->izq;
+
+        if (z->izq != NULL) ((NodoRB*)z->izq)->parent = parent;
+
+    }
+    // Caso 3: tiene dos hijos
+    else {
+        y = minimum((NodoRB*)z->der);
+        yOriginalRojo = y->rojo;
+        x = (NodoRB*)y->der;
+
+        NodoRB* yp = (NodoRB*)y->parent;
+
+        if (y->parent == z) {
+            if (x) x->parent = y;
+        } else {
+            if (y->parent->izq == y)
+                y->parent->izq = y->der;
+            else
+                y->parent->der = y->der;
+
+            if (y->der)
+                ((NodoRB*)y->der)->parent = yp;
+
+            y->der = z->der;
+            ((NodoRB*)y->der)->parent = y;
+        }
+
+        if (z->parent == NULL)
+            raiz = y;
+        else if (z == z->parent->izq)
+            z->parent->izq = y;
+        else
+            z->parent->der = y;
+
+        y->parent = z->parent;
+        y->izq = z->izq;
+        ((NodoRB*)y->izq)->parent = y;
+        y->rojo = z->rojo;
+    }
+
+    // Eliminar físicamente z
+    delete z;
+
+    // Si el nodo eliminado era negro, arreglar violaciones RB
+    if (!yOriginalRojo)
+        deleteFixup(x, (x ? x->parent : NULL));
+}
+
+void ArbolRB::deleteFixup(NodoRB* x, NodoRB* parent) {
+    while ((x != raiz) && (x == NULL || !x->rojo)) {
+
+        if (x == (parent ? parent->izq : NULL)) {
+            NodoRB* w = (NodoRB*)(parent->der);
+
+            if (w && w->rojo) {
+                w->rojo = false;
+                parent->rojo = true;
+                leftRotate(parent);
+                w = (NodoRB*)parent->der;
+            }
+
+            if ((w->izq == NULL || !((NodoRB*)w->izq)->rojo) &&
+                (w->der == NULL || !((NodoRB*)w->der)->rojo)) {
+
+                w->rojo = true;
+                x = parent;
+                parent = (NodoRB*)parent->parent;
+            } else {
+                if (w->der == NULL || !((NodoRB*)w->der)->rojo) {
+                    if (w->izq) ((NodoRB*)w->izq)->rojo = false;
+                    w->rojo = true;
+                    rightRotate(w);
+                    w = (NodoRB*)parent->der;
+                }
+
+                w->rojo = parent->rojo;
+                parent->rojo = false;
+                if (w->der) ((NodoRB*)w->der)->rojo = false;
+                leftRotate(parent);
+                x = (NodoRB*)raiz;
+                break;
+            }
+
+        } else {
+            // simétrico al anterior, pero usando lados opuestos
+            NodoRB* w = (NodoRB*)(parent->izq);
+
+            if (w && w->rojo) {
+                w->rojo = false;
+                parent->rojo = true;
+                rightRotate(parent);
+                w = (NodoRB*)parent->izq;
+            }
+
+            if ((w->der == NULL || !((NodoRB*)w->der)->rojo) &&
+                (w->izq == NULL || !((NodoRB*)w->izq)->rojo)) {
+
+                w->rojo = true;
+                x = parent;
+                parent = (NodoRB*)parent->parent;
+
+            } else {
+                if (w->izq == NULL || !((NodoRB*)w->izq)->rojo) {
+                    if (w->der) ((NodoRB*)w->der)->rojo = false;
+                    w->rojo = true;
+                    leftRotate(w);
+                    w = (NodoRB*)parent->izq;
+                }
+
+                w->rojo = parent->rojo;
+                parent->rojo = false;
+                if (w->izq) ((NodoRB*)w->izq)->rojo = false;
+                rightRotate(parent);
+                x = (NodoRB*)raiz;
+                break;
+            }
+        }
+    }
+
+    if (x) x->rojo = false;
+}
+
+

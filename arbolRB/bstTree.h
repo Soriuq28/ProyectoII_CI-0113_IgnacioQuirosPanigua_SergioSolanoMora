@@ -36,8 +36,11 @@ class ArbolBST{
   void encolar(Nodo*& cola, Nodo*& dato);
   void porNiveles(stringstream& ss);
   void inorder(Nodo* n, stringstream& ss);
+  void preorder(Nodo* n, stringstream& ss);
+  void postorder(Nodo* n, stringstream& ss);
   string toString();
 };
+
 
 class NodoSVG : public Nodo {
   public:

@@ -121,16 +121,71 @@ void ArbolBST::porNiveles(stringstream& ss){
 }
 
 void ArbolBST::inorder(Nodo* n, stringstream& ss){
-	if(n->izq != NULL) inorder(n->izq,ss);
-	if(n->der != NULL) inorder(n->der,ss);
-	ss << n->toString() << ", ";
+    if (n == NULL) return;
+
+    if (n->izq != NULL)
+        inorder(n->izq, ss);
+
+    ss << n->toString() << ", ";
+
+    if (n->der != NULL)
+        inorder(n->der, ss);
 }
 
-string ArbolBST::toString(){
-	stringstream ss;
-	porNiveles(ss);
-	return ss.str();
+void ArbolBST::preorder(Nodo* n, stringstream& ss){
+    if (n == NULL) return;
+
+    ss << n->toString() << ", ";
+
+    if (n->izq != NULL)
+        preorder(n->izq, ss);
+    if (n->der != NULL)
+        preorder(n->der, ss);
 }
+
+void ArbolBST::postorder(Nodo* n, stringstream& ss){
+    if (n == NULL) return;
+
+    if (n->izq != NULL)
+        postorder(n->izq, ss);
+    if (n->der != NULL)
+        postorder(n->der, ss);
+
+    ss << n->toString() << ", ";
+}
+
+
+string ArbolBST::toString(){
+    stringstream ss;
+
+    if (raiz == NULL) {
+        ss << "Niveles: (vacio)\n";
+        ss << "Preorder: (vacio)\n";
+        ss << "Inorder: (vacio)\n";
+        ss << "Postorder: (vacio)\n";
+        return ss.str();
+    }
+
+    ss << "Niveles: ";
+    porNiveles(ss);
+    ss << "\n";
+
+    ss << "Preorder: ";
+    preorder(raiz, ss);
+    ss << "\n";
+
+    ss << "Inorder: ";
+    inorder(raiz, ss);
+    ss << "\n";
+
+    ss << "Postorder: ";
+    postorder(raiz, ss);
+    ss << "\n";
+
+    return ss.str();
+}
+
+
 
 NodoSVG::NodoSVG(void* dato) : Nodo(dato){
 	postConstructor();

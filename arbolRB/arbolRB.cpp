@@ -20,17 +20,17 @@ int ArbolRB::compareDatos(void* a, void* b){
 		string* d2 = (string*)b;
 		return d1->compare(*d2);
 	}
-	else if( T == T(int) || T == T(float) || T == T(double) ){
+	else if( T == T(int) ) {
 		int* d1 = (int*)a;
 		int* d2 = (int*)b;
-		if(*d1 < *d2) return -1;
-		if(*d1 > *d2) return 1;
-		return 0;
-	}
-	else{
+		if (*d1 < *d2) return -1;
+		else if (*d1 > *d2) return 1;
+		else return 0;
+	} else {
+		//como ultimo compara direcciones de memoria
 		if( a < b ) return -1;
-		if( a > b ) return 1;
-		return 0;
+		else if( a > b ) return 1;
+		else return 0;
 	}
 }
 

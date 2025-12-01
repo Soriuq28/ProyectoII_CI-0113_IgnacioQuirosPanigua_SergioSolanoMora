@@ -130,7 +130,7 @@ void ArbolBST::inorder(Nodo* n, stringstream& ss){
   if (n->izq != NULL)
     inorder(n->izq, ss);
 
-  ss << n->toString() << ", ";
+  ss << datoToString(n->dato) << ", ";
 
   if (n->der != NULL)
     inorder(n->der, ss);
@@ -139,7 +139,7 @@ void ArbolBST::inorder(Nodo* n, stringstream& ss){
 void ArbolBST::preorder(Nodo* n, stringstream& ss){
   if (n == NULL) return;
 
-  ss << n->toString() << ", ";
+  ss << datoToString(n->dato) << ", ";
 
   if (n->izq != NULL)
     preorder(n->izq, ss);
@@ -155,7 +155,7 @@ void ArbolBST::postorder(Nodo* n, stringstream& ss){
   if (n->der != NULL)
     postorder(n->der, ss);
 
-  ss << n->toString() << ", ";
+  ss << datoToString(n->dato) << ", ";
 }
 
 

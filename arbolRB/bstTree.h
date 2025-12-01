@@ -20,7 +20,9 @@ class Nodo{
   void* dato;
   Nodo *izq, *der;
   string T;
+
   Nodo(void* dato);
+  virtual ~Nodo();
   string toString();
   friend ostream& operator<<(ostream& os, Nodo*& node);
   virtual void postConstructor();

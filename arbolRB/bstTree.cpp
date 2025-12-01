@@ -7,6 +7,10 @@ Nodo::Nodo(void* dato){
 	der = NULL;
 }
 
+Nodo::~Nodo(){
+	//no se hace delete del dato por que el arbol no es duenio del dato
+}
+
 string Nodo::toString(){
 	stringstream ss;
 	if(T == "int"){

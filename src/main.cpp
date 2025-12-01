@@ -2,6 +2,7 @@
 #include <sstream>
 #include "../include/arbolRB.h"
 #include "../include/rbhash.h"
+#include "../include/persona.h"
 
 using namespace std;
 
@@ -49,8 +50,7 @@ int main(){
     57, 37, 77, 27, 47, 67, 87,
     51, 31, 71, 21, 41, 61, 81,
     59, 39, 79, 29, 49, 69, 89
-  };
-
+  };  
 
   int ints2Len = sizeof(ints2) / sizeof(ints2[0]);
 
@@ -58,6 +58,46 @@ int main(){
     aInt2.insert(&ints2[i]);
   }
   aInt2.toSVG("aInt2_svgTreeViewer.html");
+
+
+  ArbolRB arbolPersonas("Persona");
+
+  Persona p1("Juan", 24, 100);
+  Persona p2("Carlos", 24, 140);
+  Persona p3("Ana", 30, 80);
+
+  arbolPersonas.insert(&p1);
+  arbolPersonas.insert(&p2);
+  arbolPersonas.insert(&p3);
+
+  cout << arbolPersonas.toString() << endl;
+  arbolPersonas.toSVG("personas.html");
+
+  RBHash<int> hInt;
+  hInt["perro"] = 10;
+  hInt["gato"] = 20;
+  hInt["perro"] = 99; 
+  
+  cout << "perro = " << hInt["perro"] << "\n";
+  cout << "gato  = " << hInt["gato"]  << "\n";
+  
+  if (hInt.contains("vaca"))
+      cout << "vaca SI existe\n";
+  else
+      cout << "vaca NO existe\n";
+  
+  hInt.toSVG("rbhash_test_int.html");
+  
+  
+ 
+  RBHash<string> hStr;
+  hStr["nombre"] = "Sergio";
+  hStr["carrera"] = "Computacion";
+  
+  cout << hStr["nombre"] << " estudia " << hStr["carrera"] << "\n";
+  
+  hStr.toSVG("rbhash_test_str.html");
+
 
   return 0;
 }

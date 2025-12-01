@@ -1,4 +1,5 @@
 #include "../include/arbolRB.h"
+#include "../include/persona.h"
 
 NodoRB::NodoRB(void* dato) : NodoSVG(dato){
   parent = NULL;
@@ -25,6 +26,13 @@ int ArbolRB::compareDatos(void* a, void* b){
 		int* d2 = (int*)b;
 		if (*d1 < *d2) return -1;
 		else if (*d1 > *d2) return 1;
+		else return 0;
+
+	} else if ( T == "Persona" ) {
+		Persona* p1 = (Persona*)a;
+		Persona* p2 = (Persona*)b;
+		if (*p1 < *p2) return -1;
+		if (*p1 > *p2) return 1;
 		else return 0;
 	} else {
 		//como ultimo compara direcciones de memoria

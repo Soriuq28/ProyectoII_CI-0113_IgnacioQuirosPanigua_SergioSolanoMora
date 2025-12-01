@@ -69,6 +69,11 @@ class RBHash {
   string toString() {
     return tree.toString();
   }
+  
+  int toSVG(const string& filename) {
+    return tree.toSVG(filename);
+  }
+
 
 };
 

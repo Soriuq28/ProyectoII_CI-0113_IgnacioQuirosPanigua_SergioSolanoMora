@@ -300,7 +300,7 @@ string ArbolSVG::toSVG(){
 }
 
 int ArbolSVG::toSVG(string outfilename){
-	string filename = "../assets/svgTreeViewerTemplate.html";
+	string filename = "assets/svgTreeViewerTemplate.html";
 	if(outfilename.compare(filename) == 0){
 		cout << "No se puede sobrescribir el archivo" << filename << endl;
 		return -1;

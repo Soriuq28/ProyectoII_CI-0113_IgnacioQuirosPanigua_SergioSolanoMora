@@ -26,6 +26,10 @@ int ArbolRB::compareDatos(void* a, void* b){
 		if (*d1 < *d2) return -1;
 		else if (*d1 > *d2) return 1;
 		else return 0;
+	} else if (T == T(HashPair)) {
+		HashPair* p1 = (HashPair*)a;
+		HashPair* p2 = (HashPair*)b;
+		return p1->key.compare(p2->key); 
 	} else {
 		//como ultimo compara direcciones de memoria
 		if( a < b ) return -1;

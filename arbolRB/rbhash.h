@@ -72,4 +72,10 @@ class RBHash {
 
 };
 
+template <typename V>
+ostream& operator<<(ostream& os, RBHash<V>& h) {
+  os << h.toString();
+  return os;
+}
+
 #endif // RBHASH_H

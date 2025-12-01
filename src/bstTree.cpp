@@ -347,7 +347,6 @@ int ArbolSVG::toSVG(string outfilename){
 
 	cout << "Se gener� el visualizador '"<< outfilename <<"'.\nPor favor, proceda a abrilo desde un navegador web." << endl;
 
-	// El archivo se generó; no abrir automáticamente según la política del proyecto.
 	return 0;
 }
 

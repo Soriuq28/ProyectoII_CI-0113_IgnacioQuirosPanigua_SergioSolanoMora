@@ -41,6 +41,7 @@ class ArbolBST{
   void preorder(Nodo* n, stringstream& ss);
   void postorder(Nodo* n, stringstream& ss);
   string toString();
+  virtual string datoToString(void* dato);
 };
 
 

@@ -23,7 +23,7 @@ class ArbolRB : public ArbolSVG {
   ArbolRB(string T);
   using ArbolSVG::toSVG; // exponer las sobrecargas de la clase base (toSVG(string))
 
-  int compareDatos(void* a, void* b);
+  virtual int compareDatos(void* a, void* b);
 
   void leftRotate(NodoRB* x);
   void rightRotate(NodoRB* x);

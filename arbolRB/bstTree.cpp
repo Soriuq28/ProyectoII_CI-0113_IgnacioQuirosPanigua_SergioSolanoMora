@@ -20,8 +20,7 @@ string Nodo::toString(){
 	else if(T == "string"){
 		string* dato = (string*)this->dato;
 		ss << *dato;
-	}
-	else{
+  } else {
 		ss << "{" << this->dato << "}";
 	}
 	return ss.str();
@@ -116,7 +115,7 @@ void ArbolBST::porNiveles(stringstream& ss){
 		Nodo* nodoArbol = (Nodo*)sacarDeCola->dato;
 		delete sacarDeCola;
 
-		ss << nodoArbol->toString() << ", ";
+		ss << datoToString(nodoArbol->dato) << ", "; // y aqui tambien en datoToString
 
 		if(nodoArbol->izq != NULL) encolar(cola, nodoArbol->izq);
 		if(nodoArbol->der != NULL) encolar(cola, nodoArbol->der);
@@ -124,70 +123,72 @@ void ArbolBST::porNiveles(stringstream& ss){
 	}
 }
 
+
 void ArbolBST::inorder(Nodo* n, stringstream& ss){
-    if (n == NULL) return;
+  if (n == NULL) return;
 
-    if (n->izq != NULL)
-        inorder(n->izq, ss);
+  if (n->izq != NULL)
+    inorder(n->izq, ss);
 
-    ss << n->toString() << ", ";
+  ss << n->toString() << ", ";
 
-    if (n->der != NULL)
-        inorder(n->der, ss);
+  if (n->der != NULL)
+    inorder(n->der, ss);
 }
 
 void ArbolBST::preorder(Nodo* n, stringstream& ss){
-    if (n == NULL) return;
+  if (n == NULL) return;
 
-    ss << n->toString() << ", ";
+  ss << n->toString() << ", ";
 
-    if (n->izq != NULL)
-        preorder(n->izq, ss);
-    if (n->der != NULL)
-        preorder(n->der, ss);
+  if (n->izq != NULL)
+    preorder(n->izq, ss);
+  if (n->der != NULL)
+    preorder(n->der, ss);
 }
 
 void ArbolBST::postorder(Nodo* n, stringstream& ss){
-    if (n == NULL) return;
+  if (n == NULL) return;
 
-    if (n->izq != NULL)
-        postorder(n->izq, ss);
-    if (n->der != NULL)
-        postorder(n->der, ss);
+  if (n->izq != NULL)
+    postorder(n->izq, ss);
+  if (n->der != NULL)
+    postorder(n->der, ss);
 
-    ss << n->toString() << ", ";
+  ss << n->toString() << ", ";
 }
 
 
 string ArbolBST::toString(){
-    stringstream ss;
+  stringstream ss;
 
-    if (raiz == NULL) {
-        ss << "Niveles: (vacio)\n";
-        ss << "Preorder: (vacio)\n";
-        ss << "Inorder: (vacio)\n";
-        ss << "Postorder: (vacio)\n";
-        return ss.str();
-    }
-
-    ss << "Niveles: ";
-    porNiveles(ss);
-    ss << "\n";
-
-    ss << "Preorder: ";
-    preorder(raiz, ss);
-    ss << "\n";
-
-    ss << "Inorder: ";
-    inorder(raiz, ss);
-    ss << "\n";
-
-    ss << "Postorder: ";
-    postorder(raiz, ss);
-    ss << "\n";
-
+  if (raiz == NULL) {
+    ss << "Niveles: (vacio)\n";
+    ss << "Preorder: (vacio)\n";
+    ss << "Inorder: (vacio)\n";
+    ss << "Postorder: (vacio)\n";
     return ss.str();
+  }
+
+  ss << "Niveles: ";
+  porNiveles(ss);
+  ss << "\n";
+
+  ss << "Preorder: ";
+  preorder(raiz, ss);
+  ss << "\n";
+
+  ss << "Inorder: ";
+  inorder(raiz, ss);
+  ss << "\n";
+
+  ss << "Postorder: ";
+  postorder(raiz, ss);
+  ss << "\n";
+
+  return ss.str();
 }
+
 
 
 
@@ -329,4 +330,10 @@ int ArbolSVG::toSVG(string outfilename){
 
 	// El archivo se generó; no abrir automáticamente según la política del proyecto.
 	return 0;
+}
+
+string ArbolBST::datoToString(void* dato) {
+    Nodo temp(dato);
+    temp.T = T;
+    return temp.toString();
 }

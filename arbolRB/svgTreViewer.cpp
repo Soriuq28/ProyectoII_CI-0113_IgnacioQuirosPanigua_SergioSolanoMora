@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include "arbolRB.h"
+#include "rbhash.h"
 
 using namespace std;
 
@@ -49,6 +50,30 @@ int main(){
     51, 31, 71, 21, 41, 61, 81,
     59, 39, 79, 29, 49, 69, 89
   };
+
+  cout << "\n===== PROBANDO RBHash =====\n";
+
+RBHash<int> h;
+
+// Insertar valores
+h["perro"] = 10;
+h["gato"] = 20;
+h["zorro"] = 30;
+
+// Sobrescribir
+h["perro"] = 99;
+
+// Ver búsquedas
+cout << "h[\"perro\"] = " << h["perro"] << "\n";
+cout << "h[\"gato\"] = " << h["gato"] << "\n";
+
+// Contains
+cout << "contains(\"zorro\")? " << (h.contains("zorro") ? "sí" : "no") << "\n";
+cout << "contains(\"vaca\")? " << (h.contains("vaca") ? "sí" : "no") << "\n";
+
+// Mostrar el árbol
+cout << "\nÁrbol interno:\n";
+cout << h.toString() << endl;
 
   int ints2Len = sizeof(ints2) / sizeof(ints2[0]);
 

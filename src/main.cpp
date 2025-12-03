@@ -76,26 +76,24 @@ int main(){
   RBHash<int> hInt;
   hInt["perro"] = 10;
   hInt["gato"] = 20;
-  hInt["perro"] = 99; 
-  
+  hInt["perro"] = 99;
+
   cout << "perro = " << hInt["perro"] << "\n";
   cout << "gato  = " << hInt["gato"]  << "\n";
-  
+
   if (hInt.contains("vaca"))
       cout << "vaca SI existe\n";
   else
       cout << "vaca NO existe\n";
-  
+
   hInt.toSVG("rbhash_test_int.html");
-  
-  
- 
+
   RBHash<string> hStr;
   hStr["nombre"] = "Sergio";
   hStr["carrera"] = "Computacion";
-  
+
   cout << hStr["nombre"] << " estudia " << hStr["carrera"] << "\n";
-  
+
   hStr.toSVG("rbhash_test_str.html");
 
 

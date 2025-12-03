@@ -247,8 +247,9 @@ string ArbolSVG::toSVG(){
 	NodoSVG* root = (NodoSVG*)raiz;
 	int svgWidth = 800;
 	int svgHeight = 600;
-	int horizontalSpacing = 50; // espacio entre nodos en x
-	int verticalSpacing = 80;   // espacio entre niveles en y
+	// Increase spacing so lines do not cross node interiors
+	int horizontalSpacing = 90; // espacio entre nodos en x (was 50)
+	int verticalSpacing = 100;   // espacio entre niveles en y (was 80)
 
 	int xRef = 1; // referencia para el x
 	asignarCoordenadas(root, 0, xRef, horizontalSpacing, verticalSpacing);
@@ -265,7 +266,8 @@ string ArbolSVG::toSVG(){
 	};
 	computeBounds(root);
 	if(minX == INT_MAX){ minX = 0; maxX = 200; minY = 0; maxY = 200; }
-	int margin = 40;
+	// Increase margin to provide more canvas space so edges and links are not clipped
+	int margin = 120;
 	int vbMinX = minX - margin;
 	int vbMinY = minY - margin; // include top margin so root is not cut
 	int vbWidth = (maxX - minX) + margin*2;
@@ -274,26 +276,79 @@ string ArbolSVG::toSVG(){
 	stringstream svgContent;
 	svgContent << "<svg viewBox=\""<<vbMinX<<" "<<vbMinY<<" "<<vbWidth<<" "<<vbHeight<<"\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width: 100%; height: auto;\">";
 
-	auto dibujarNodo = [&](const auto &self, NodoSVG* node, stringstream& svgContent) -> void {
-		if(node == NULL) return;
+	// We'll collect node shapes and edge lines separately so we can render edges
+	// on top with higher contrast/thickness for better visibility.
+	stringstream nodesBuf;
+	stringstream edgesBuf;
 
+	auto dibujarNodo = [&](const auto &self, NodoSVG* node, stringstream& nodesBuf, stringstream& edgesBuf) -> void {
+		if(node == NULL) return;
 		if(node->izq != NULL){
-			svgContent << "<line x1=\""<<node->x<<"\" y1=\""<<node->y<<"\" x2=\""<<((NodoSVG*)node->izq)->x<<"\" y2=\""<<((NodoSVG*)node->izq)->y<<"\" stroke=\"black\"/>";
+			edgesBuf << "<line x1=\""<<node->x<<"\" y1=\""<<node->y<<"\" x2=\""<<((NodoSVG*)node->izq)->x<<"\" y2=\""<<((NodoSVG*)node->izq)->y<<"\" stroke=\"#444\" stroke-width=\"3\" stroke-linecap=\"round\"/>";
 		}
 
 		if(node->der != NULL){
-			svgContent << "<line x1=\""<<node->x<<"\" y1=\""<<node->y<<"\" x2=\""<<((NodoSVG*)node->der)->x<<"\" y2=\""<<((NodoSVG*)node->der)->y<<"\" stroke=\"black\"/>";
+			edgesBuf << "<line x1=\""<<node->x<<"\" y1=\""<<node->y<<"\" x2=\""<<((NodoSVG*)node->der)->x<<"\" y2=\""<<((NodoSVG*)node->der)->y<<"\" stroke=\"#444\" stroke-width=\"3\" stroke-linecap=\"round\"/>";
 		}
 
-		int radius = 18;
-		svgContent << "<circle cx=\""<<node->x<<"\" cy=\""<<node->y<<"\" r=\""<<radius<<"\" fill=\"lightblue\" stroke=\"#333\" stroke-width=\"1\"/>";
-		svgContent << "<text x=\""<<node->x<<"\" y=\""<<(node->y + 5)<<"\" text-anchor=\"middle\" font-size=\"12\" fill=\"#111\">"<<node->toString()<<"</text>";
+		string label = datoToString(node->dato);
+		int radius = 16;
+		int fontSize = 12;
+		if(label.size() > 16){
+			fontSize = max(8, 12 - (int)(label.size() / 10));
+			radius = max(radius, 16 + (int)(label.size() / 6));
+		}
+		nodesBuf << "<circle cx=\""<<node->x<<"\" cy=\""<<node->y<<"\" r=\""<<radius<<"\" fill=\"lightblue\" stroke=\"#333\" stroke-width=\"1\"/>";
+		// Build up to 3 lines trying to split on spaces.
+		int maxLines = 3;
+		int maxChars = 14; // rough chars per line before wrap
+		std::string linesArr[3];
+		int linesCount = 0;
+		string rem = label;
+		while(!rem.empty() && linesCount < maxLines){
+			if((int)rem.size() <= maxChars){
+				linesArr[linesCount++] = rem;
+				break;
+			}
+			size_t split = rem.find_last_of(' ', maxChars);
+			if(split == string::npos) split = maxChars;
+			string part = rem.substr(0, split);
+			size_t nextStart = split;
+			if(nextStart < rem.size() && rem[nextStart] == ' ') nextStart++;
+			linesArr[linesCount++] = part;
+			rem = (nextStart < rem.size() ? rem.substr(nextStart) : string());
+		}
+		if(!rem.empty() && linesCount == maxLines){
+			string last = rem;
+			if((int)last.size() > maxChars) last = last.substr(0, maxChars-3) + "...";
+			linesArr[linesCount-1] = linesArr[linesCount-1] + " " + last;
+		}
+		// recompute radius so text fits inside the circle
+		size_t maxLen = 0;
+		for(int i=0;i<linesCount;++i) if(linesArr[i].size() > maxLen) maxLen = linesArr[i].size();
+		double charWidth = fontSize * 0.6; // approximate
+		int neededRadius = (int)( (maxLen * charWidth) / 2.0 ) + 10; // padding
+		radius = max(radius, neededRadius + (int)(linesCount-1) * (fontSize/4));
+		// draw circle
+		nodesBuf << "<circle cx=\""<<node->x<<"\" cy=\""<<node->y<<"\" r=\""<<radius<<"\" fill=\"lightblue\" stroke=\"#333\" stroke-width=\"1\"/>";
+		// draw text centered inside the circle (multi-line)
+		int totalHeight = (int)linesCount * (fontSize + 2) - 2;
+		int startY = node->y - totalHeight/2 + (fontSize/2);
+		nodesBuf << "<text x=\""<<node->x<<"\" y=\""<<startY<<"\" text-anchor=\"middle\" font-size=\""<<fontSize<<"\" fill=\"#111\">";
+		for(int i=0;i<linesCount;++i){
+			int dy = (int)(i==0?0:fontSize+2);
+			nodesBuf << "<tspan x=\""<<node->x<<"\" dy=\""<<dy<<"\">"<<linesArr[i]<<"</tspan>";
+		}
+		nodesBuf << "</text>";
 
-		self(self, (NodoSVG*)node->izq, svgContent);
-		self(self, (NodoSVG*)node->der, svgContent);
+		self(self, (NodoSVG*)node->izq, nodesBuf, edgesBuf);
+		self(self, (NodoSVG*)node->der, nodesBuf, edgesBuf);
 	};
 
-	dibujarNodo(dibujarNodo, root, svgContent);
+	dibujarNodo(dibujarNodo, root, nodesBuf, edgesBuf);
+	// Draw edges first (behind), then nodes on top so lines don't cover node circles
+	svgContent << edgesBuf.str();
+	svgContent << nodesBuf.str();
 	svgContent << "</svg>";
 
 	return svgContent.str();

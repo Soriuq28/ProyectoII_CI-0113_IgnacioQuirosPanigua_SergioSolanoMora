@@ -33,13 +33,15 @@ class ArbolRB : public ArbolSVG {
 
   void deleteDato(void* dato);
   void deleteFixup(NodoRB* x, NodoRB* parentDeX);
-  
+
   NodoRB* minimum(NodoRB* n);
 
   Nodo* search(void* dato);
 
   // Sobrescribir toSVG para colorear nodos según su color
   string toSVG();
+  // Convertir dato a string (ej. Persona)
+  virtual string datoToString(void* dato) override;
 };
 
 #endif // ARBOLRB_H

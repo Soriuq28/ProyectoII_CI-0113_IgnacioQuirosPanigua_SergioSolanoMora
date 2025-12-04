@@ -1,10 +1,9 @@
 #include "../include/arbolRB.h"
 #include "../include/persona.h"
-// Do not use STL containers like <vector> per project restrictions
 
 NodoRB::NodoRB(void* dato) : NodoSVG(dato){
   parent = NULL;
-  rojo = true; // por defecto, al insertar, los nodos son rojos
+  rojo = true; // by default, nodes are red upon insertion (RB property)
 }
 
 void NodoRB::postConstructor(){
@@ -36,7 +35,7 @@ int ArbolRB::compareDatos(void* a, void* b){
 		if (*p1 > *p2) return 1;
 		else return 0;
 	} else {
-		//como ultimo compara direcciones de memoria
+		// as last resouce, use pointer comparison
 		if( a < b ) return -1;
 		else if( a > b ) return 1;
 		else return 0;
@@ -101,15 +100,15 @@ void ArbolRB::insert(void* dato){
 		else y->der = z;
 	}
 
-	// Fixup para restaurar propiedades RB
+	// Fixup to restore RB properties
 	insertFixup(z);
 }
 void ArbolRB::insertFixup(NodoRB* z){
-	// Mientras el padre exista y sea rojo
+	// While the parent exists and is red
 	while(z->parent != NULL && ((NodoRB*)z->parent)->rojo){
 		NodoRB* p = (NodoRB*)z->parent;
 		NodoRB* g = (NodoRB*)p->parent;
-		if(g == NULL) break; // seguridad
+		if(g == NULL) break; // safety
 
 		if(p == g->izq){
 			NodoRB* y = (NodoRB*)g->der; // uncle
@@ -123,7 +122,7 @@ void ArbolRB::insertFixup(NodoRB* z){
 				if(z == p->der){
 					z = p;
 					leftRotate(z);
-					p = (NodoRB*)z->parent; // actualizar p
+					p = (NodoRB*)z->parent; // update p
 					g = (NodoRB*)p->parent;
 				}
 				p->rojo = false;
@@ -155,7 +154,7 @@ void ArbolRB::insertFixup(NodoRB* z){
 			}
 		}
 	}
-	// Asegurar raiz negra
+	// Ensure root is black
 	if(raiz != NULL) ((NodoRB*)raiz)->rojo = false;
 }
 
@@ -172,14 +171,14 @@ Nodo* ArbolRB::search(void* dato){
 
 string ArbolRB::toSVG(){
 	NodoSVG* root = (NodoSVG*)raiz;
-	// asignar coordenadas reutilizando ArbolSVG
+	// assign coordinates reusing ArbolSVG
 	int xRef = 1;
 	// Increase spacing so lines do not cross node interiors
 	int horizontalSpacing = 90;
 	int verticalSpacing = 100;
 	asignarCoordenadas((NodoSVG*)root, 0, xRef, horizontalSpacing, verticalSpacing);
 
-	// Calcular bounds del árbol para ajustar viewBox
+	// calculate bounds of the tree to adjust viewBox
 	int minX = INT_MAX, maxX = INT_MIN, minY = INT_MAX, maxY = INT_MIN;
 	function<void(NodoSVG*)> computeBounds = [&](NodoSVG* n){
 		if(n == NULL) return;
@@ -398,7 +397,7 @@ void ArbolRB::deleteFixup(NodoRB* x, NodoRB* parent) {
             }
 
         } else {
-            // simétrico al anterior, pero usando lados opuestos
+            // simetrico al anterior, pero usando lados opuestos
             NodoRB* w = (NodoRB*)(parent->izq);
 
             if (w && w->rojo) {

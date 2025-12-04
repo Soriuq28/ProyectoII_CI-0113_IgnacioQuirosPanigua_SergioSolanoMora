@@ -8,7 +8,7 @@ Nodo::Nodo(void* dato){
 }
 
 Nodo::~Nodo(){
-	//no se hace delete del dato por que el arbol no es duenio del dato
+	// Destructor
 }
 
 string Nodo::toString(){
@@ -39,21 +39,21 @@ ArbolBST::ArbolBST(string T){
 	raiz = NULL;
 	this->T = T;
 }
-// Insertar por valor
+// Insert by value
 template<typename U>
 void insert(U valor) {
   U* copia = new U(valor);
   insert((void*)copia);
 }
 
-// Insertar por referencia
+// Insert by reference
 template<typename U>
 void insert(U& valor) {
   U* copia = new U(valor);
   insert((void*)copia);
 }
 
-// Insertar puntero
+// Insert pointer
 template<typename U>
 void insert(U* ptr) {
   insert((void*)ptr);
@@ -62,15 +62,14 @@ void insert(U* ptr) {
 void ArbolBST::insert(void* dato){
 	Nodo* nuevoNodo = new Nodo(dato);
 	nuevoNodo->T = T;
-	nuevoNodo->postConstructor(); // IMPORTANTE para que las clases derivadas se inicialicen !!
-
+	nuevoNodo->postConstructor(); // important, this way derived classes are initialized
 	if(raiz == NULL){
 		raiz = nuevoNodo;
 	}else{
 		Nodo *it = raiz, *p = NULL;
 		char donde = 'D';
 
-		// buscar el campo
+	
 		while(it != NULL){
 			p = it;
 			if( T == T(string) ){
@@ -96,7 +95,7 @@ void ArbolBST::insert(void* dato){
 				}
 			}
 			else{
-				if( dato < it->dato ){ // OJO...
+				if( dato < it->dato ){ 
 					it = it->izq; donde = 'I';
 				}
 				else{
@@ -106,7 +105,7 @@ void ArbolBST::insert(void* dato){
 
 		}// while
 
-		// realizar la inserci�n
+		// perform the insertion
 		if(donde == 'I') p->izq = nuevoNodo;
 		else p->der = nuevoNodo;
 
@@ -134,7 +133,7 @@ void ArbolBST::porNiveles(stringstream& ss){
 		Nodo* nodoArbol = (Nodo*)sacarDeCola->dato;
 		delete sacarDeCola;
 
-		ss << datoToString(nodoArbol->dato) << ", "; // y aqui tambien en datoToString
+		ss << datoToString(nodoArbol->dato) << ", "; 
 
 		if(nodoArbol->izq != NULL) encolar(cola, nodoArbol->izq);
 		if(nodoArbol->der != NULL) encolar(cola, nodoArbol->der);
@@ -247,9 +246,9 @@ string ArbolSVG::toSVG(){
 	NodoSVG* root = (NodoSVG*)raiz;
 	int svgWidth = 800;
 	int svgHeight = 600;
-	// Increase spacing so lines do not cross node interiors
-	int horizontalSpacing = 90; // espacio entre nodos en x (was 50)
-	int verticalSpacing = 100;   // espacio entre niveles en y (was 80)
+	// increase horizontal and vertical spacing to prevent lines from crossing node interiors
+	int horizontalSpacing = 90; // space between nodes in x (was 50)
+	int verticalSpacing = 100;   // space between levels in y (was 80)
 
 	int xRef = 1; // referencia para el x
 	asignarCoordenadas(root, 0, xRef, horizontalSpacing, verticalSpacing);
@@ -276,7 +275,7 @@ string ArbolSVG::toSVG(){
 	stringstream svgContent;
 	svgContent << "<svg viewBox=\""<<vbMinX<<" "<<vbMinY<<" "<<vbWidth<<" "<<vbHeight<<"\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width: 100%; height: auto;\">";
 
-	// We'll collect node shapes and edge lines separately so we can render edges
+	// node shapes and edge lines separately so we can render edges
 	// on top with higher contrast/thickness for better visibility.
 	stringstream nodesBuf;
 	stringstream edgesBuf;

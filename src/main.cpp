@@ -89,7 +89,7 @@ int main(){
   hInt.toSVG("rbhash_test_int.html");
 
   RBHash<string> hStr;
-  hStr["nombre"] = "Sergio";
+  hStr["nombre"] = "Sergio e Ignacio";
   hStr["carrera"] = "Computacion";
 
   cout << hStr["nombre"] << " estudia " << hStr["carrera"] << "\n";

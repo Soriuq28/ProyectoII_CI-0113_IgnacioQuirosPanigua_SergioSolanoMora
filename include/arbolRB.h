@@ -7,10 +7,10 @@
 
 using namespace std;
 
-// Nodo para Arbol RB (hereda de NodoSVG para compatibilidad con SVG)
+// node of Red-Black Tree
 class NodoRB : public NodoSVG {
   public:
-  bool rojo; // true = rojo, false = negro
+  bool rojo; // true = red, false = black
   NodoRB* parent;
 
   NodoRB(void* dato);
@@ -21,7 +21,7 @@ class NodoRB : public NodoSVG {
 class ArbolRB : public ArbolSVG {
   public:
   ArbolRB(string T);
-  using ArbolSVG::toSVG; // exponer las sobrecargas de la clase base (toSVG(string))
+  using ArbolSVG::toSVG; // expose base class overloads (toSVG(string))
 
   virtual int compareDatos(void* a, void* b);
 
@@ -38,9 +38,9 @@ class ArbolRB : public ArbolSVG {
 
   Nodo* search(void* dato);
 
-  // Sobrescribir toSVG para colorear nodos según su color
+  // Override toSVG to color nodes according to their color
   string toSVG();
-  // Convertir dato a string (ej. Persona)
+  // Convert data to string (e.g., Persona)
   virtual string datoToString(void* dato) override;
 };
 

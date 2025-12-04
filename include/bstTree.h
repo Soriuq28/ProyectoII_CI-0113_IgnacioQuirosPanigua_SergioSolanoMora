@@ -34,20 +34,22 @@ class ArbolBST{
   string T;
 
   ArbolBST(string T);
+
+  // Insert by value
   template<typename U>
   void insert(U valor) {
     U* copia = new U(valor);
     insert((void*)copia);
   }
 
-  // Insertar por referencia
+  // Insert by reference
   template<typename U>
   void insert(U& valor) {
     U* copia = new U(valor);
     insert((void*)copia);
   }
 
-  // Insertar puntero
+  // Insert pointer
   template<typename U>
   void insert(U* ptr) {
     insert((void*)ptr);
